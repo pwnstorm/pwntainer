@@ -20,13 +20,17 @@ class Auth(object):
 				"password": password
 			}
 		
-		print("[*] Attempting to login as %s ===> %s" %(username, password))
+		#print("[*] Attempting to login as %s ===> %s" %(username, password))
 		jwt = requests.post(self.host+"/auth", data=json.dumps(data)).json()
 		if "jwt" in jwt.keys():
 			self.jwt_token = jwt
-			print("[+] Authentication successful!")
+			#print("[+] Authentication successful!")
+			print(jwt)
+			return "success"
 		elif "err" in jwt.keys():
-			print("[-] Authentication failed!")
+			#print("[-] Authentication failed!")
+			print(jwt)
+			return "failed"
 		else:
 			print("[-] An unknown error occured!")
 
