@@ -23,16 +23,16 @@ class Auth(object):
 		#print("[*] Attempting to login as %s ===> %s" %(username, password))
 		jwt = requests.post(self.host+"/auth", data=json.dumps(data)).json()
 		if "jwt" in jwt.keys():
-			self.jwt_token = jwt
-			#print("[+] Authentication successful!")
-			print(jwt)
+			self.jwt_token = jwt['jwt']
 			return "success"
+
 		elif "err" in jwt.keys():
-			#print("[-] Authentication failed!")
-			print(jwt)
 			return "failed"
 		else:
 			print("[-] An unknown error occured!")
+
+	def get_jwt(self):
+		return self.jwt_token
 
 """
 	def bruteforce(self, pw_list)

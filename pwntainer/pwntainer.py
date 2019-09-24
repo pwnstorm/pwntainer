@@ -16,8 +16,14 @@ def bruteforce(pw_list):
 		
 
 def main():
-	print("[*] Starting pwntainer bruteforce")
-	bruteforce("./data/wordlist.txt")
+	#print("[*] Starting pwntainer bruteforce")
+	#bruteforce("./data/wordlist.txt")
+	
+	creds = a.login("screature") #currently uses hardcoded crendential to test different endpoints.
+	with open("./data/auth.token", 'w') as token:
+		token.write(a.get_jwt())
+	
+
 
 if __name__=="__main__":
 	main()
