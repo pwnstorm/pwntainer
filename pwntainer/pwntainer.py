@@ -2,6 +2,7 @@ from modules import auth
 from multiprocessing import Pool
 import sys
 
+# Initialize the authentication object and supply host address and positional argument
 a = auth.Auth(sys.argv[1])
 
 
