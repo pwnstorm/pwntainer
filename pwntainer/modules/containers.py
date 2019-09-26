@@ -9,7 +9,7 @@ class Containers(object):
 	 	self.headers = {"Authorization": 'Bearer '+ open("./data/auth.token").read()}
 	 	self.docker_endp = "http://"+host+"/api/endpoints/"+str(endp)
 
-	def get_containers(self):
+	def list_containers(self):
 		containers = requests.get(self.docker_endp+"/docker/containers/json", headers=self.headers).json()
 		pprint(containers)
 		return containers
