@@ -24,3 +24,12 @@ class Image(object):
 			return "success"
 		else:
 			return "result.text"
+
+	def remove_image(self, image_name):
+		rmi = requests.delete(self.docker_endp+"/docker/images/"+image_name, headers=self.headers)
+		if rmi.status_code == 200:
+			print("success")
+		elif rmi.status_code == 404:
+			print("no such image")
+		else:
+			print(rmi.text)
