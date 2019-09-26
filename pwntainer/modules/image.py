@@ -8,12 +8,12 @@ class Image(object):
 	"""
 	
 	def __init__(self, host, endp):
-		self.headers = {"Authorization": 'Bearer '+ open("../data/auth.token").read()}
+		self.headers = {"Authorization": 'Bearer '+ open("./data/auth.token").read()}
 		self.docker_endp = "http://"+host+"/api/endpoints/"+str(endp)
 
 	def list_images(self):
 		images = requests.get(self.docker_endp+"/docker/images/json", headers=self.headers).json()
-		pprint(images)
+		return images
 
 	def pull_image(self, image_name):
 		data = {
