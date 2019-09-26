@@ -1,5 +1,6 @@
 import requests
 from pprint import pprint
+import json
 
 class Containers(object):
 	"""
@@ -13,3 +14,5 @@ class Containers(object):
 		containers = requests.get(self.docker_endp+"/docker/containers/json", headers=self.headers).json()
 		pprint(containers)
 		return containers
+
+	

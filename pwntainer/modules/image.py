@@ -1,6 +1,6 @@
 import requests
 from pprint import pprint
-
+import json
 
 class Image(object):
 	"""
@@ -14,3 +14,13 @@ class Image(object):
 	def list_images(self):
 		images = requests.get(self.docker_endp+"/docker/images/json", headers=self.headers).json()
 		pprint(images)
+
+	def pull_image(self, image_name):
+		data = {
+			"fromImage": image_name
+		}
+		result = requests.post(self.docker_endp+"/docker/images/create", data=data, headers=self.headers)
+		if result.status_code == 200:
+			return "success"
+		else:
+			return "result.text"
