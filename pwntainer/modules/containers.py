@@ -10,6 +10,6 @@ class Containers(object):
 	 	self.docker_endp = "http://"+host+"/api/endpoints/"+str(endp)
 
 	def get_containers(self):
-		containers = requests.get(self.docker_endp+"/docker/containers/json", headers=self.headers, proxies={"http": "http://localhost:8080"}).json()
+		containers = requests.get(self.docker_endp+"/docker/containers/json", headers=self.headers).json()
 		pprint(containers)
 		return containers
