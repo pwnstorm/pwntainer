@@ -7,8 +7,9 @@ class Image(object):
 	This object has got the behaviors of a docker image i.e. pulling an image and listing existing images
 	"""
 	
-	def __init__(self, host, endp):
-		self.headers = {"Authorization": 'Bearer '+ open("./data/auth.token").read()}
+	def __init__(self, host, endp, token):
+                self.bearer = 'Bearer {}'.format(token)
+		self.headers = {"Authorization": self.bearer}
 		self.docker_endp = "http://"+host+"/api/endpoints/"+str(endp)
 
 	def list_images(self):

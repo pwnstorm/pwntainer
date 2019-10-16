@@ -6,8 +6,9 @@ class Containers(object):
 	"""
 	Defines the remote container objects
 	"""
-	def __init__(self, host, endp):
-	 	self.headers = {"Authorization": 'Bearer '+ open("./data/auth.token").read(), "Content-Type": "application/json"}
+	def __init__(self, host, endp, token):
+                self.bearer = 'Bearer {}'.format(token)
+	 	self.headers = {"Authorization": self.bearer,  "Content-Type": "application/json"}
 	 	self.docker_endp = "http://"+host+"/api/endpoints/"+str(endp)
 	 	self.name = "eviltainer"
 
