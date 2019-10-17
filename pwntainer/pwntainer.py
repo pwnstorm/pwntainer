@@ -57,86 +57,85 @@ def pull_image(name):
 
 
 def commads():
-        _parser = argparse.ArgumentParser(prog='Pwntainer', usage='%(prog)s Host [options]' , description='Portainer exploitaion toolkit: ')
-        _parser.add_argument('Host', help='Enter the address of the container running the portainer:192.168.25.101:9000 ')
+	_parser = argparse.ArgumentParser(prog='Pwntainer', usage='%(prog)s Host [options]' , description='Portainer exploitaion toolkit: ')
+	_parser.add_argument('Host', help='Enter the address of the container running the portainer:192.168.25.101:9000 ')
         
-        _authentication = _parser.add_argument_group('Authentication',)
-        _authentication.add_argument('-p' , '--password', metavar=''  ,help='If the default username is admin, provide a passwor: ',  required=True)
-        _authentication.add_argument('-l' , '--passlist', metavar=''  ,help='provide a passlist incase of brutefoce')
+	_authentication = _parser.add_argument_group('Authentication',)
+	_authentication.add_argument('-p' , '--password', metavar=''  ,help='If the default username is admin, provide a passwor: ',  required=True)
+	_authentication.add_argument('-l' , '--passlist', metavar=''  ,help='provide a passlist incase of brutefoce')
 
     
-        _containers = _parser.add_argument_group('Information Gathering')
-        _containers.add_argument('-C' , '--list-containers', dest='listc', help='List containers in the edpoint.', action='store_true')
-        _containers.add_argument('-I' , '--list-images' , help='List available images in the target endpoint. ', action='store_true')
-        _containers.add_argument('-N' , '--list-networks' , help='List networks in the remote target endpoint. ', action ='store_true')
+	_containers = _parser.add_argument_group('Information Gathering')
+	_containers.add_argument('-C' , '--list-containers', dest='listc', help='List containers in the edpoint.', action='store_true')
+	_containers.add_argument('-I' , '--list-images' , help='List available images in the target endpoint. ', action='store_true')
+	_containers.add_argument('-N' , '--list-networks' , help='List networks in the remote target endpoint. ', action ='store_true')
 
-        _images = _parser.add_argument_group('Images Manupilation')
-        _images.add_argument('-li' , '--listi'  ,help='List images available in the endpoint. ', action='store_true')
-        _images.add_argument('-pi' , '--pull'  ,help='Pull an evil image to the endpoint.', action='store_true')
-        _images.add_argument('-di' , '--delete',help='Delete image', action='store_true')
+	_images = _parser.add_argument_group('Images Manupilation')
+	_images.add_argument('-li' , '--listi'  ,help='List images available in the endpoint. ', action='store_true')
+	_images.add_argument('-pi' , '--pull'  ,help='Pull an evil image to the endpoint.', action='store_true')
+	_images.add_argument('-di' , '--delete',help='Delete image', action='store_true')
 
-        _attack = _parser.add_argument_group('Attacks Surfac')
-        _attack.add_argument('-pj' , '--pwnwithJohn', metavar='')
-        _attack.add_argument('-wp' , '--webpwn', metavar='')
-        _attack.add_argument('-sp' , '--sshpwn', metavar='')
-        _attack.add_argument('-a', '--all', metavar='')
+	_attack = _parser.add_argument_group('Attacks Surfac')
+	_attack.add_argument('-pj' , '--pwnwithJohn', metavar='')
+	_attack.add_argument('-wp' , '--webpwn', metavar='')
+	_attack.add_argument('-sp' , '--sshpwn', metavar='')
+	_attack.add_argument('-a', '--all', metavar='')
         
-        _commands = _parser.parse_args()
+	_commands = _parser.parse_args()
         
-        if _commands.Host and _commands.password:
-			_authenticate = auth.Auth(_commands.Host)
-			_authenticate.login(_commands.password)
-			print('\033[1;35;40m[*]Authenticated.')
+	if _commands.Host and _commands.password:
+		_authenticate = auth.Auth(_commands.Host)
+		_authenticate.login(_commands.password)
+		print('\033[1;35;40m[*]Authenticated.')
                     
-			_token = str(_authenticate.get_jwt())
-			_images = image.Image(_commands.Host, 1, _token)
+		_token = str(_authenticate.get_jwt())
+		_images = image.Image(_commands.Host, 1, _token)
 
 			
-        if _commands.listc:
-			list_containers(_commands.Host, _token)
+	if _commands.listc:
+		list_containers(_commands.Host, _token)
 
-		elif _commands.creat:
-			_containerName = raw_input('\033[1;33;40m[+]Enter container to create: ')
-			_mountVolume = raw_input('\033[1;33;40m[+]Enter the volume to mount: ')
-			_container.create_container(_containerName, _mountVolume)
+	elif _commands.creat:
+		_containerName = raw_input('\033[1;33;40m[+]Enter container to create: ')
+		_mountVolume = raw_input('\033[1;33;40m[+]Enter the volume to mount: ')
+		_container.create_container(_containerName, _mountVolume)
 
-		elif _commands.start:
-        	print'\033[1;35;40m[*]Starting containers..'
-            if _container.start_container() == 'True':
-            	print'\033[1;35;40m[*]Container successfully started.'
-            else:
-            	print'\033[1;31;40m[-]Unable to start container...'
+	elif _commands.start:
+		print'\033[1;35;40m[*]Starting containers..'
+		if _container.start_container() == 'True':
+			print'\033[1;35;40m[*]Container successfully started.'
+		else:
+			print'\033[1;31;40m[-]Unable to start container...'
 
-        elif _commands.listi:
-			_images = _images.list_images()
-			_images = json.dumps(_images, indent=4, sort_keys=True)
-			print _images
+	elif _commands.listi:
+		_images = _images.list_images()
+		_images = json.dumps(_images, indent=4, sort_keys=True)
+		print _images
 
-        elif _commands.pull:
-        	_imageName = raw_input('\033[1;33;40m[+]Enter the image to pull: ')
-            print '\033[1;33;40m[+]Pulling {} this will take some time...'.format(_imageName)
-            """
+	elif _commands.pull:
+		_imageName = raw_input('\033[1;33;40m[+]Enter the image to pull: ')
+		print '\033[1;33;40m[+]Pulling {} this will take some time...'.format(_imageName)
+		"""
 				def check_image(_imageName):
                     _images.pull_image(_imageName)
                     if 'success':
                         print'\033[1;35;40m[*]Image pulled.'
                     else :
                         print'\033[1;31;40m[-] {}'.format(_pull)
-        	"""
-        elif _commands.delete:
-        	_imageName = raw_input('\033[1;33;40m[+]Enter the image to delete: ')
-        	_images.remove_image(_imageName)
+		"""
+	elif _commands.delete:
+		_imageName = raw_input('\033[1;33;40m[+]Enter the image to delete: ')
+		_images.remove_image(_imageName)
 
-        else:
-        	print'\033[1;31;40m[-]Supply a valid command!'
-        	_commands.help
+	else:
+		print'\033[1;31;40m[-]Supply a valid command!'
+		_commands.help
 
 
 
 def main():
-        
-        commads()
-        """
+	commads()
+	"""
         print("\n")
 	print("[*] Checking if the evil pwntainer image exists...")
 	if check_image("ubuntu:18.04"):
@@ -156,6 +155,6 @@ def main():
 	print("[*] Starting host poisoning")
 	# Todo exec on container
 
-        """
+	"""
 if __name__=="__main__":
 	main()
