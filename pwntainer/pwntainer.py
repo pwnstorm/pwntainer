@@ -39,6 +39,17 @@ def list_containers(host, token):
 	table = AsciiTable(container_table)
 	print(table.table)
 
+def list_images(host, token):
+	imgs = image.Image(host, 1, token)
+	image_list = imgs.list_images()
+	image_table = [["Name"]]
+	for img in image_list:
+		img_d = []
+		img_d.append(img['RepoTags'][0])
+		image_table.append(img_d)
+	table = AsciiTable(image_table)
+	print(table.table)
+
 
 def check_image(name):
 	img = image.Image(sys.argv[1], sys.argv[2])
@@ -67,11 +78,11 @@ def commads():
     
 	_containers = _parser.add_argument_group('Information Gathering')
 	_containers.add_argument('-C' , '--list-containers', dest='listc', help='List containers in the edpoint.', action='store_true')
-	_containers.add_argument('-I' , '--list-images' , help='List available images in the target endpoint. ', action='store_true')
+	_containers.add_argument('-I' , '--list-images', dest='listi', help='List available images in the target endpoint. ', action='store_true')
 	_containers.add_argument('-N' , '--list-networks' , help='List networks in the remote target endpoint. ', action ='store_true')
 
 	_images = _parser.add_argument_group('Images Manupilation')
-	_images.add_argument('-li' , '--listi'  ,help='List images available in the endpoint. ', action='store_true')
+	#_images.add_argument('-li' , '--listi'  ,help='List images available in the endpoint. ', action='store_true')
 	_images.add_argument('-pi' , '--pull'  ,help='Pull an evil image to the endpoint.', action='store_true')
 	_images.add_argument('-di' , '--delete',help='Delete image', action='store_true')
 
@@ -93,24 +104,31 @@ def commads():
 
 			
 	if _commands.listc:
+		print("[*] Getting a list of containers in the remote target...")
 		list_containers(_commands.Host, _token)
+		print("[+] Done!\n")
 
+	"""
 	elif _commands.creat:
 		_containerName = raw_input('\033[1;33;40m[+]Enter container to create: ')
 		_mountVolume = raw_input('\033[1;33;40m[+]Enter the volume to mount: ')
 		_container.create_container(_containerName, _mountVolume)
+	"""
 
+	"""
 	elif _commands.start:
 		print'\033[1;35;40m[*]Starting containers..'
 		if _container.start_container() == 'True':
 			print'\033[1;35;40m[*]Container successfully started.'
 		else:
 			print'\033[1;31;40m[-]Unable to start container...'
+	"""
 
-	elif _commands.listi:
-		_images = _images.list_images()
-		_images = json.dumps(_images, indent=4, sort_keys=True)
-		print _images
+	if _commands.listi:
+		print("[*] Getting a list of docker images present...")
+		list_images(_commands.Host, _token)
+		print("[+] Done!")
+	
 
 	elif _commands.pull:
 		_imageName = raw_input('\033[1;33;40m[+]Enter the image to pull: ')
