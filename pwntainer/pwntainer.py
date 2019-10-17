@@ -81,11 +81,6 @@ def commads():
 	_containers.add_argument('-I' , '--list-images', dest='listi', help='List available images in the target endpoint. ', action='store_true')
 	_containers.add_argument('-N' , '--list-networks' , help='List networks in the remote target endpoint. ', action ='store_true')
 
-	_images = _parser.add_argument_group('Images Manupilation')
-	#_images.add_argument('-li' , '--listi'  ,help='List images available in the endpoint. ', action='store_true')
-	_images.add_argument('-pi' , '--pull'  ,help='Pull an evil image to the endpoint.', action='store_true')
-	_images.add_argument('-di' , '--delete',help='Delete image', action='store_true')
-
 	_attack = _parser.add_argument_group('Attacks Surfac')
 	_attack.add_argument('-pj' , '--pwnwithJohn', metavar='')
 	_attack.add_argument('-wp' , '--webpwn', metavar='')
@@ -129,25 +124,24 @@ def commads():
 		list_images(_commands.Host, _token)
 		print("[+] Done!")
 	
-
+	"""
 	elif _commands.pull:
 		_imageName = raw_input('\033[1;33;40m[+]Enter the image to pull: ')
 		print '\033[1;33;40m[+]Pulling {} this will take some time...'.format(_imageName)
-		"""
+		
 				def check_image(_imageName):
                     _images.pull_image(_imageName)
                     if 'success':
                         print'\033[1;35;40m[*]Image pulled.'
                     else :
                         print'\033[1;31;40m[-] {}'.format(_pull)
-		"""
+	
 	elif _commands.delete:
 		_imageName = raw_input('\033[1;33;40m[+]Enter the image to delete: ')
 		_images.remove_image(_imageName)
+	"""
 
-	else:
-		print'\033[1;31;40m[-]Supply a valid command!'
-		_commands.help
+	
 
 
 
