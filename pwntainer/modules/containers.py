@@ -24,7 +24,7 @@ class Containers(object):
 			"Cmd": ["/bin/bash", "-c", "sleep 3000"],
 			"OpenStdin": True,
 			"Tty": True,
-			"Image":"ubuntu:18.04",
+			"Image":"sethmwabe/pwntainer",
 			"Volumes": vol,
 			"HostConfig": {
 				"Binds": mnt_array,
@@ -38,3 +38,22 @@ class Containers(object):
 	def start_container(self):
 		s_container = requests.post(self.docker_endp+"/docker/containers/"+self.name+"/start", headers=self.headers).text
 		return True
+
+	def exec_cmd(self, cmd):
+		command = {
+			"AttachStdin": True,
+			"AttachStdout": True,
+			"AttachStderr": True,
+			"Tty": True,
+			"Cmd": cmd,
+		}
+
+		exc_cmd = requests.post(self.docker_endp+"/docker/containers/"+self.name+"/exec", data=json.dumps(command), headers=self.headers)
+		print(exc_cmd.status_code)
+		print(exc_cmd.text)
+		self.start_exec_cmd(exc_cmd.json()['Id'])
+
+	def start_exec_cmd(self, cmd_instance_id):
+		cmd = requests.post(self.docker_endp+"/docker/exec/"+str(cmd_instance_id)+"/start", data=json.dumps({"Detach":False, "Tty":True}), headers=self.headers)
+		print(cmd.status_code)
+		print(cmd.text)

